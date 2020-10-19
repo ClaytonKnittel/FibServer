@@ -26,14 +26,14 @@ $(shell mkdir -p $(LDIR))
 CDEPFILES=$(CSRC:$(SDIR)/%.c=$(ODIR)/%.d)
 DEPFILES=$(SRC:$(SDIR)/%.cc=$(ODIR)/%.d)
 
-all: $(BDIR)/$(EXE) $(LDIR)/$(SRCLIB)
+all: $(LDIR)/$(SRCLIB) test
 
 .PHONY: test
 test: $(LDIR)/$(SRCLIB)
 	(make -C test/ BASE_DIR=$(BASE_DIR) BIN_DIR=$(BASE_DIR)/$(BDIR) SRCLIB=$(BASE_DIR)/$(LDIR)/$(SRCLIB))
 
-$(BDIR)/$(EXE): $(OBJ) $(COBJ)
-	$(CPPC) -flto $(OBJ) $(COBJ) -o $(BDIR)/$(EXE) $(LDFLAGS)
+#$(BDIR)/$(EXE): $(OBJ) $(COBJ)
+#	$(CPPC) -flto $(OBJ) $(COBJ) -o $(BDIR)/$(EXE) $(LDFLAGS)
 
 $(LDIR)/$(SRCLIB): $(OBJ) $(COBJ)
 	$(AR) -rcs $@ $(OBJ) $(COBJ)
