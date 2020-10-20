@@ -26,6 +26,8 @@ $(shell mkdir -p $(LDIR))
 CDEPFILES=$(CSRC:$(SDIR)/%.c=$(ODIR)/%.d)
 DEPFILES=$(SRC:$(SDIR)/%.cc=$(ODIR)/%.d)
 
+MAIN_EXE=fibd
+
 all: $(LDIR)/$(SRCLIB) test
 
 .PHONY: test
@@ -46,6 +48,16 @@ $(ODIR)/%.o: $(SDIR)/%.c
 
 -include $(wildcard $(DEPFILES))
 -include $(wildcard $(CDEPFILES))
+
+
+.PHONY: start
+start:
+	$(BDIR)/$(MAIN_EXE) &
+
+.PHONY: stop
+stop:
+	@PID=`pgrep -u $(USER) $(MAIN_EXE)`; if [ -n "$$PID" ]; then kill -12 $$PID; fi
+
 
 .PHONY: clean
 clean:

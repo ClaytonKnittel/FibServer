@@ -3,11 +3,12 @@
 
 #include <errno.h>
 #include <signal.h>
+#include <srv.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <srv.h>
+#include <client.h>
 
 
 static int connect_server(struct server * srv, int listenfd) {
@@ -65,7 +66,6 @@ int init_server_shutdown(struct server * srv) {
 
 
 
-
 CilkPrioCommandDefine(void, accept_loop, (struct server * srv), {
     struct sockaddr_storage addr;
     socklen_t               addrlen = sizeof(addr);
@@ -73,18 +73,19 @@ CilkPrioCommandDefine(void, accept_loop, (struct server * srv), {
     int sfd;
     int stop = 0;
 
+    cilk_enable_spawn_in_this_func();
+
     while (srv->running) {
         sfd = cilk_accept4_sync(
             srv->listenfd, (struct sockaddr *) &addr, &addrlen, SOCK_NONBLOCK);
 
         printf("accept returns %d, error %s\n", sfd, strerror(errno));
         if (sfd >= 0) {
-            close(sfd);
+            cilk_pspawn_void(ClientP, handle_client_conn, srv, sfd);
         }
     }
+    cilk_psync;
     return;
 });
 
-CilkPrioCommandInstantiateAtPrio(accept_loop, cilk::Low);
-
-
+CilkPrioCommandInstantiateAtPrio(accept_loop, AcceptP);

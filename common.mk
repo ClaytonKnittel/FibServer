@@ -8,7 +8,7 @@ CC=gcc
 CPPC=$(CILK_DIR)/Tapir/src/build/bin/clang++
 
 
-DEBUG=0
+DEBUG=1
 
 
 COMMON=-std=c++17 -g

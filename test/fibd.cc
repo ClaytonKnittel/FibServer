@@ -39,7 +39,7 @@ int main(int argc, char * argv[]) {
 
     int ret;
 
-    cilk_enable_spawn_in_this_func();
+    cilk_enable_diff_prio_spawn_in_this_func();
 
     // daemonize();
 
@@ -52,10 +52,11 @@ int main(int argc, char * argv[]) {
 
     signal(SIGUSR2, sig_call_init_server_shutdown);
 
-    cilk_pspawn_void(cilk::Low, accept_loop, &srv);
+    cilk_pspawn_void(AcceptP, accept_loop, &srv);
 
-    usleep(1000000);
-    kill(getpid(), SIGUSR2);
+    //usleep(1000000);
+    //kill(getpid(), SIGUSR2);
+
     cilk_psync;
 
     // init_server_shutdown(&srv);
