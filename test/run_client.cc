@@ -12,7 +12,7 @@
 
 
 #define fprintf(file, fmt, ...) \
-    fprintf(file, "\033[31m" fmt "\033[0m", __VA_ARGS__)
+    fprintf(file, "\033[32m" fmt "\033[0m", __VA_ARGS__)
 
 
 int main(int argc, char * argv[]) {
@@ -39,7 +39,21 @@ int main(int argc, char * argv[]) {
         return -1;
     }
 
-    usleep(1000000);
+    int input = 10;
+    if (write(sfd, &input, sizeof(input)) == -1) {
+        fprintf(stderr, "Write failed, reason: %s\n", strerror(errno));
+        close(sfd);
+        return -1;
+    }
+
+    char buf[4];
+    if (read(sfd, buf, sizeof(buf)) == sizeof(buf)) {
+        fprintf(stderr, "Received response from server: %d\n", *((int *) &buf));
+    }
+    else {
+        fprintf(stderr, "Read didn't work, reason: %s\n", strerror(errno));
+    }
+
     close(sfd);
 
     return 0;
