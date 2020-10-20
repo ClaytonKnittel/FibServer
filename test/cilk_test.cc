@@ -13,7 +13,7 @@ CilkPrioCommandDefine(int, fn, (int input) {
 
 
 int main(int argc, char * argv[]) {
-    cilk_enable_diff_prio_spawn_in_this_func();
+    //cilk_enable_diff_prio_spawn_in_this_func();
 
     cilk::pfuture<int, cilk::Low> * test = new cilk::pfuture<int, cilk::Low>;
     cilk_pfuture_create(test, fn, 10);

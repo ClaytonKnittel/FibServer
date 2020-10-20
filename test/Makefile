@@ -31,7 +31,7 @@ $(BIN_DIR)/%: $(ODIR)/%.o $(SRCLIB)
 	$(CC) $< -o $@ $(SRCLIB)
 
 $(BIN_DIR)/%: $(PODIR)/%.o $(SRCLIB)
-	$(CPPC) -flto $< -o $@ $(LDFLAGS) $(SRCLIB)
+	$(CPPC) -flto $< -o $@ $(SRCLIB) $(LDFLAGS)
 
 $(ODIR)/%.o: %.c
 	$(CC) $(CFLAGS) $< -c -o $@ $(IFLAGS)
