@@ -79,9 +79,12 @@ CilkPrioCommandDefine(void, accept_loop, (struct server * srv), {
         sfd = cilk_accept4_sync(
             srv->listenfd, (struct sockaddr *) &addr, &addrlen, SOCK_NONBLOCK);
 
-        printf("accept returns %d, error %s\n", sfd, strerror(errno));
         if (sfd >= 0) {
+            printf("Connecting to client on fd %d\n", sfd);
             cilk_pspawn_void(ClientP, handle_client_conn, srv, sfd);
+        }
+        else {
+            printf("accept returns %d, error %s\n", sfd, strerror(errno));
         }
     }
     cilk_psync;
